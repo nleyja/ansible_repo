@@ -17,6 +17,27 @@
         update_cache: yes
       when: ansible_distribution == "Ubuntu"
 
+    - name: create a user
+      tags: always
+      ansible.builtin.user:
+        name: wemby
+        groups: root
+
+    - name: add sudoers file for wemby
+      tags: always
+      ansible.builtin.copy:
+        src: sudoer_wemby
+        dest: /etc/sudoers.d/wemby
+        owner: root
+        group: root
+        mode: 0440
+
+    - name: add ssh key for wemby user
+      tags: always
+      ansible.builtin.authorized_key:
+        user: wemby
+        key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPk9ix6AtosVvN0cNOo/XEJ8wFlarGiz9XF5rCrsYCln noah@ubuntu-ws"
+
 - hosts: web_servers
   become: true
   tasks:
